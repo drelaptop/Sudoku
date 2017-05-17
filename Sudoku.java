@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 /**
  * @author laputa 前提：数独具有唯一解
@@ -44,6 +45,16 @@ public class Sudoku {
     }
     
     /**
+     * 初始化空的数组矩阵,调用this.build()生成
+     */
+    public Sudoku() {
+        super();
+        this.matrix = new int[9][9];
+        this.mtxOptSet = new int[9][9][10];// 第十个位置存放可选集合的大小
+        this.build();
+    }
+    
+    /**
      * 解数独,统计求解过程中循环处理的次数
      * 
      * @return 正常处理完成/由于循环次数太多被迫中止
@@ -67,6 +78,28 @@ public class Sudoku {
             }
         }
         return isSuccess;
+    }
+    
+    /**
+     * 构建一个数独矩阵,一直达不到要求,方法不结束！！
+     */
+    private void build() {
+        long times = 0;
+        Random random = new Random();
+        do {
+            int[][] tempMtx = new int[9][9];
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    tempMtx[i][j] = (random.nextInt() % 9 + 9) % 9 + 1;
+                }
+                this.matrix = tempMtx;
+            }
+            times++;
+            if (times % 1000000 == 0) {
+                System.out.println(times / 1000000);
+            }
+        } while (!this.judge());
+        System.out.println("Spend times:" + times);
     }
     
     /**
